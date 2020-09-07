@@ -1,3 +1,8 @@
+/*
+ * This code measures an analog signal with a given sampling frequency
+ * Created by Patrick Mayerhofer June 2020
+ */
+
 
 #define sf 1000 //change this for wanted sampling fq
 //~ #define tc (1000/(sf))     // time constant
