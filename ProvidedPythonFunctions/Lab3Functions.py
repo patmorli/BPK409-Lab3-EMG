@@ -75,24 +75,74 @@ def get_bursts(x):
     
     return start,end
 
-""" This function is when you put together several datasets,
+""" This function imports three files of the MVC experiment, three files of the weights experiment,
+    and three files of the fatigue experiment. It creates one variable for each (MVV, weights, fatigue)
+    and normalizes the time axis. The variables need to be in the working directory as
+    Weight1, Weight2, Weight3, MVC1, MVC2, MVC3, Fatigue1, Fatigue2, Fatigue3
+    Input: 
+    Output: weights, mvc, fatigue
+   """
+   
+def import_data():
+    """ This function is when you put together several datasets,
     but each dataset always starts with a time of 0.
     Input: dataframe that also has a column 't'
     Output: continuous time over all datasets
    """
-def time_norm(data):
-    a = list(data.iloc[:]['t'])
-    b = list(data.iloc[:]['t'])
+    def time_norm(data):
+        a = list(data.iloc[:]['t'])
+        b = list(data.iloc[:]['t'])
+        
+        for u in range(len(a)-1):
+            if a[u]>a[u+1]:
+                if b[u]>b[u+1]:
+                    offset = a[u]-a[u+1]+1
+                    a[u+1] = offset + a[u+1]
+                    u += 1
+                else:
+                    a[u+1] = offset + a[u+1]
+                    u += 1
+                      
+        output = pd.DataFrame({'emg': data.emg, 't': a})
+        return output
     
-    for u in range(len(a)-1):
-        if a[u]>a[u+1]:
-            if b[u]>b[u+1]:
-                offset = a[u]-a[u+1]+1
-                a[u+1] = offset + a[u+1]
-                u += 1
-            else:
-                a[u+1] = offset + a[u+1]
-                u += 1
-                  
-    output = pd.DataFrame({'emg': data.emg, 't': a})
-    return output
+    """import data and put weights in one variable and mvc in one variable"""
+    column_names = [
+      'emg',
+      't',  
+    ]
+    # Creating an empty Dataframe with column names only
+    weights_raw = pd.DataFrame(columns=column_names)
+    mvc_raw = pd.DataFrame(columns=column_names)
+    fatigue_raw = pd.DataFrame(columns=column_names)
+    
+    # read all mvc, weight, and fatigue files 
+    for i in range(3):
+        # create string for path
+        weights_string = 'Weight' + str(i+1) + '.txt'
+        mvc_string = 'MVC' + str(i+1) + '.txt'
+        fatigue_string = 'Fatigue' + str(i+1) + '.txt'
+        
+        weights_raw = weights_raw.append(pd.read_csv(
+            weights_string,
+             sep=',', names=column_names, skiprows= 50,
+             skipfooter = 50
+            ))
+        mvc_raw = mvc_raw.append(pd.read_csv(
+            mvc_string,
+             sep=',', names=column_names, skiprows= 50, 
+             skipfooter = 50
+            ))
+        fatigue_raw = fatigue_raw.append(pd.read_csv(
+            fatigue_string,
+             sep=',', names=column_names, skiprows= 50, 
+             skipfooter = 50
+            ))
+    # timing needs changing as, the appended data starts from 0 again
+    weights = time_norm(weights_raw)
+    mvc = time_norm(mvc_raw)
+    fatigue = time_norm(fatigue_raw)
+    return weights, mvc, fatigue
+
+
+
