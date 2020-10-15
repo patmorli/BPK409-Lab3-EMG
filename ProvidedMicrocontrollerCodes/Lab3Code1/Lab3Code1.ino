@@ -26,7 +26,7 @@ void loop() {
     ADC_Value = analogRead(A0);
     
     Serial.print(ADC_Value);
-    Serial.print(',');
+    Serial.print('\t');
     Serial.print(millis());
     Serial.println();
     }

@@ -13,6 +13,7 @@ For more information:
 import numpy as np
 from scipy import fftpack
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 
@@ -73,3 +74,25 @@ def get_bursts(x):
     plt.show()
     
     return start,end
+
+""" This function is when you put together several datasets,
+    but each dataset always starts with a time of 0.
+    Input: dataframe that also has a column 't'
+    Output: continuous time over all datasets
+   """
+def time_norm(data):
+    a = list(data.iloc[:]['t'])
+    b = list(data.iloc[:]['t'])
+    
+    for u in range(len(a)-1):
+        if a[u]>a[u+1]:
+            if b[u]>b[u+1]:
+                offset = a[u]-a[u+1]+1
+                a[u+1] = offset + a[u+1]
+                u += 1
+            else:
+                a[u+1] = offset + a[u+1]
+                u += 1
+                  
+    output = pd.DataFrame({'emg': data.emg, 't': a})
+    return output
