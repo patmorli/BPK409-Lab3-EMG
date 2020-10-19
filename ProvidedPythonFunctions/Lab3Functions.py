@@ -83,7 +83,7 @@ def get_bursts(x):
     Output: weights, mvc, fatigue
    """
    
-def import_data():
+def import_data(separator):
     """ This function is when you put together several datasets,
     but each dataset always starts with a time of 0.
     Input: dataframe that also has a column 't'
@@ -125,17 +125,17 @@ def import_data():
         
         weights_raw = weights_raw.append(pd.read_csv(
             weights_string,
-             sep=',', names=column_names, skiprows= 50,
+             sep=separator, names=column_names, skiprows= 50,
              skipfooter = 50
             ))
         mvc_raw = mvc_raw.append(pd.read_csv(
             mvc_string,
-             sep=',', names=column_names, skiprows= 50, 
+             sep=separator, names=column_names, skiprows= 50, 
              skipfooter = 50
             ))
         fatigue_raw = fatigue_raw.append(pd.read_csv(
             fatigue_string,
-             sep=',', names=column_names, skiprows= 50, 
+             sep=separator, names=column_names, skiprows= 50, 
              skipfooter = 50
             ))
     # timing needs changing as, the appended data starts from 0 again
