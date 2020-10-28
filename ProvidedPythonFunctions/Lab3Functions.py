@@ -129,7 +129,7 @@ def import_data(separator):
                     u += 1
                       
         output = pd.DataFrame({'emg': data.emg, 't': a})
-        output.reset_index(inplace = True)
+        output.reset_index(inplace = True, drop = True)
         return output
     
     """import data and put weights in one variable and mvc in one variable"""
